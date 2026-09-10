@@ -1,6 +1,27 @@
 (() => {
   const stage = document.querySelector('.stage');
-  if (!stage || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const toggle = document.querySelector('.theme-toggle');
+  if (!stage) return;
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Restore the visitor's previous theme; dark is the default.
+  const savedTheme = localStorage.getItem('matrix-theme');
+  if (savedTheme === 'light') stage.classList.add('light');
+  if (toggle) {
+    const isLight = stage.classList.contains('light');
+    toggle.setAttribute('aria-pressed', String(isLight));
+    toggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+  }
+
+  toggle?.addEventListener('click', () => {
+    const isLight = stage.classList.toggle('light');
+    localStorage.setItem('matrix-theme', isLight ? 'light' : 'dark');
+    toggle.setAttribute('aria-pressed', String(isLight));
+    toggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+  });
+
+  if (reducedMotion) return;
 
   let raf = 0;
   let x = 50;
