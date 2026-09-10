@@ -5,13 +5,11 @@
 
 * { box-sizing: border-box; }
 html, body { width: 100%; height: 100%; margin: 0; }
-body { overflow: hidden; background: #070908; }
+body { overflow: hidden; background: #050806; }
 
 .stage {
-  --background: #070908;
-  --foreground: rgba(235, 241, 237, 0.92);
-  --mx: 50%;
-  --my: 50%;
+  --background: #050806;
+  --foreground: rgba(235, 241, 237, 0.9);
   position: relative;
   width: 100vw;
   height: 100svh;
@@ -21,35 +19,49 @@ body { overflow: hidden; background: #070908; }
   isolation: isolate;
   overflow: hidden;
   color: var(--foreground);
-  background: radial-gradient(circle at var(--mx) var(--my), rgba(39, 67, 50, 0.09), transparent 28%), var(--background);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(50, 76, 59, 0.035), transparent 31%),
+    var(--background);
   transition: background-color 900ms ease, color 900ms ease;
 }
 
-.atmosphere {
+.field {
   position: absolute;
-  inset: -15%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(ellipse at 50% 50%, rgba(126,154,137,.035), transparent 34%), radial-gradient(ellipse at 52% 47%, transparent 45%, rgba(0,0,0,.42) 100%);
-  filter: blur(18px);
-  transform: translate3d(0,0,0) scale(1.04);
-  animation: breathe 18s ease-in-out infinite alternate;
+  opacity: 0.95;
+}
+
+.stage::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  z-index: -2;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, rgba(126, 154, 137, 0.026), transparent 36%);
+  filter: blur(22px);
+  animation: breathe 20s ease-in-out infinite alternate;
 }
 
 .statement {
+  position: relative;
+  z-index: 2;
   margin: 0;
-  max-width: 16vw;
   width: max-content;
+  max-width: 16vw;
   font-size: clamp(.62rem, 1.05vw, 1rem);
   line-height: 1.2;
-  font-weight: 400;
+  font-weight: 350;
   letter-spacing: .035em;
   white-space: nowrap;
   text-align: center;
-  opacity: 0;
-  transform: translate3d(0,3px,0);
-  animation: arrive 2.2s cubic-bezier(.22,1,.36,1) .25s forwards;
-  text-shadow: 0 0 28px rgba(205,225,211,.035);
+  opacity: .92;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  text-shadow: 0 0 28px rgba(205, 225, 211, .025);
   transition: color 900ms ease, text-shadow 900ms ease;
 }
 
@@ -57,32 +69,50 @@ body { overflow: hidden; background: #070908; }
   position: absolute;
   right: 28px;
   bottom: 28px;
+  z-index: 5;
   width: 34px;
   height: 34px;
   padding: 0;
-  border: 1px solid rgba(235,241,237,.12);
+  border: 1px solid rgba(235, 241, 237, .1);
   border-radius: 50%;
-  background: rgba(235,241,237,.025);
+  background: rgba(235, 241, 237, .018);
   color: inherit;
   display: grid;
   place-items: center;
   cursor: pointer;
-  opacity: .45;
+  opacity: .38;
   transition: opacity 500ms ease, background 700ms ease, border-color 700ms ease, transform 500ms ease;
 }
-.theme-toggle:hover, .theme-toggle:focus-visible { opacity: .9; }
+
+.theme-toggle:hover, .theme-toggle:focus-visible { opacity: .85; }
 .theme-toggle:active { transform: scale(.94); }
 .theme-toggle:focus-visible { outline: 1px solid currentColor; outline-offset: 5px; }
-.theme-toggle__dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .75; transition: transform 700ms cubic-bezier(.22,1,.36,1), opacity 500ms ease; }
+.theme-toggle__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: .7;
+  transition: transform 700ms cubic-bezier(.22, 1, .36, 1), opacity 500ms ease;
+}
 
-.stage.light { --background: #f5f6f2; --foreground: rgba(17,20,18,.9); color-scheme: light; background: radial-gradient(circle at var(--mx) var(--my), rgba(60,75,63,.055), transparent 28%), var(--background); }
-.stage.light .atmosphere { background: radial-gradient(ellipse at 50% 50%, rgba(35,48,39,.035), transparent 34%), radial-gradient(ellipse at 52% 47%, transparent 45%, rgba(0,0,0,.055) 100%); }
-.stage.light .statement { text-shadow: 0 0 28px rgba(20,28,23,.035); }
-.stage.light .theme-toggle { border-color: rgba(17,20,18,.12); background: rgba(17,20,18,.025); }
+.stage.light {
+  --background: #f5f6f2;
+  --foreground: rgba(17, 20, 18, .88);
+  color-scheme: light;
+  background: radial-gradient(circle at 50% 50%, rgba(75, 91, 78, .028), transparent 31%), var(--background);
+}
+
+.stage.light::before { background: radial-gradient(ellipse at 50% 50%, rgba(35, 48, 39, .022), transparent 36%); }
+.stage.light .field { filter: invert(1); opacity: .42; }
+.stage.light .statement { text-shadow: 0 0 28px rgba(20, 28, 23, .025); }
+.stage.light .theme-toggle { border-color: rgba(17, 20, 18, .1); background: rgba(17, 20, 18, .018); }
 .stage.light .theme-toggle__dot { transform: scale(.72); }
 
-@keyframes arrive { to { opacity: .92; transform: translate3d(0,0,0); } }
-@keyframes breathe { from { transform: scale(1.04) translate3d(-.4%,.2%,0); } to { transform: scale(1.08) translate3d(.4%,-.2%,0); } }
+@keyframes breathe {
+  from { transform: scale(1.03) translate3d(-.35%, .2%, 0); opacity: .8; }
+  to { transform: scale(1.08) translate3d(.35%, -.2%, 0); opacity: 1; }
+}
 
 @media (max-width: 700px) {
   .statement { max-width: 20vw; font-size: clamp(.52rem, 2.7vw, .78rem); }
@@ -90,7 +120,7 @@ body { overflow: hidden; background: #070908; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stage, .atmosphere, .statement, .theme-toggle, .theme-toggle__dot { transition: none; }
-  .atmosphere { animation: none; }
-  .statement { animation: none; opacity: .92; transform: none; }
+  .stage, .statement, .theme-toggle, .theme-toggle__dot { transition: none; }
+  .stage::before { animation: none; }
+  .statement { transform: none !important; }
 }
